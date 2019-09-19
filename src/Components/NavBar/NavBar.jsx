@@ -15,6 +15,7 @@ const NavBar = () => (
             <li className="nav-item active">
               <Link className="nav-link" to="/Mantenimiento">Mantenimiento <span className="sr-only">(current)</span></Link>
             </li>
+
           </ul>
         </div>
     </nav>

@@ -18,7 +18,7 @@ class Home extends React.Component {
   Procesar = () => {
     Axios({
       method: 'GET',
-      url : "http://localhost:60141/CICAM/Marcaje",
+      url : "http://localhost:60142/CICAM/Marcaje",
       headers: {
         'content-type' : 'application/json'
       },
@@ -30,8 +30,7 @@ class Home extends React.Component {
       }      
     })
     .then(response => {
-      console.log(response);
-      if(response.data.status == "Registro no encontrado"){
+      if(response.data.status === "Registro no encontrado"){
         this.setState({
           alertType: "danger"
         })
@@ -39,7 +38,7 @@ class Home extends React.Component {
 
       }else{
         this.setState({alertType: "success"})
-        Axios.get("http://localhost:60141/CICAM/Empleados/Find?"+"ID="+parseInt(response.data.ID))
+        Axios.get("http://localhost:60141/CICAM/Empleados/Find?ID="+parseInt(response.data.ID))
         .then(response =>{
           this.setState({
             Empleado : response.data
@@ -94,7 +93,7 @@ class Home extends React.Component {
                 {   
                   Object.keys(this.state.Empleado).map(index => {
                     return (
-                      <tr>
+                      <tr key={this.state.Empleado[index].ID}>
                         <td>{this.state.Empleado[index].ID}</td>
                         <td>{this.state.Empleado[index].NOMBRE}</td>
                         <td>{this.state.Empleado[index].APELLIDO}</td>
