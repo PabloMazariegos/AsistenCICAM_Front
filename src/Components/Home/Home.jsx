@@ -18,7 +18,7 @@ class Home extends React.Component {
   Procesar = () => {
     Axios({
       method: 'GET',
-      url : "http://localhost:60142/CICAM/Marcaje",
+      url : "http://localhost:60141/CICAM/Marcaje",
       headers: {
         'content-type' : 'application/json'
       },

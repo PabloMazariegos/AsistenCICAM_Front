@@ -13,7 +13,7 @@ class Excel extends React.Component{
   }
 
   componentDidMount(){
-    Axios.get("http://localhost:60142/CICAM/Export")
+    Axios.get("http://localhost:60141/CICAM/Export")
 			.then(response =>{
 				this.setState({
 					export : response.data

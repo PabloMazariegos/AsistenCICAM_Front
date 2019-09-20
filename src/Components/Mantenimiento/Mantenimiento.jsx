@@ -95,10 +95,12 @@ class Mantenimiento extends React.Component {
 		let Puesto = document.getElementById("txt_puesto").value
 
 		if(Nombre !== ""	&& Apellido !== ""	&& Puesto !== ""){
-			Axios.post("http://localhost:60142/CICAM/Empleados?CODIGO="+ Codigo +"&NOMBRE="+Nombre+"&APELLIDO="+Apellido+"&PUESTO="+Puesto+"&HUELLA=''")
+			Axios.post("http://localhost:60141/CICAM/Empleados?CODIGO="+ Codigo +"&NOMBRE="+Nombre+"&APELLIDO="+Apellido+"&PUESTO="+Puesto+"&HUELLA=''")
 			.then(response => {
 				if(response.data.StatusCode === 200){
-					alert(response.data.message);
+					document.getElementById("AlertContainer").style.display="block";
+					this.setState({alertType : "success"});
+					document.getElementById("AlertMessage").innerHTML = "Empleado Ingresado Exitosamente! "
 
 					Axios.get("http://localhost:60141/CICAM/Empleados/")
 					.then(response =>{
@@ -107,13 +109,23 @@ class Mantenimiento extends React.Component {
 						})
 					})
 
+				}else{
+					document.getElementById("AlertContainer").style.display="block";
+					this.setState({alertType : "danger"});
+					document.getElementById("AlertMessage").innerHTML = "Ha ocurrido un error, intenta de nuevo"
 				}
 			})
 		}
 	}
 
 	FormIngresar(){
-		document.getElementById('FormIngresar').style.display="block";
+		var formIngreso = document.getElementById('FormIngresar');
+		if(formIngreso.style.display == "block"){
+			formIngreso.style.display = "none"
+		}else{
+			formIngreso.style.display = "block"
+		}
+		
 	}
 
 	GrabaHuella(IDe){
@@ -122,12 +134,19 @@ class Mantenimiento extends React.Component {
 		document.getElementById("AlertMessage").innerHTML = "Coloca tu dedo en el lector 4 veces"
 		this.setState({alertType : "warning"});
 		
-		Axios.post("http://localhost:60142/CICAM/Marcaje?ID="+ IDe +"&NOMBRE=''&APELLIDO=''&PUESTO=''&HUELLA=''")
+		Axios.post("http://localhost:60141/CICAM/Marcaje?ID="+ IDe +"&NOMBRE=''&APELLIDO=''&PUESTO=''&HUELLA=''")
 			.then(response => {
 				if(response != ""){
 					document.getElementById(IDe+"spinner").style.display="none";
 					document.getElementById("AlertMessage").innerHTML = "Huella Grabada Exitosamente! "
 					this.setState({alertType : "success"});
+
+					Axios.get("http://localhost:60141/CICAM/Empleados/")
+					.then(response =>{
+						this.setState({
+							empleados : response.data
+						})
+					})
 
 				}else{
 					this.setState({alertType : "danger"});
@@ -136,6 +155,20 @@ class Mantenimiento extends React.Component {
 				}
 			})
 
+	}
+
+	Eliminar(ID){
+		Axios.delete("http://localhost:60141/CICAM/Empleados?ID="+ID)
+			.then(response => {
+				document.getElementById("AlertContainer").style.display="block";
+				if(response.data.StatusCode === 200){
+					this.setState({alertType : "success"});
+					document.getElementById("AlertMessage").innerHTML = "Empleado Eliminado Exitosamente! "
+				}else{
+					this.setState({alertType : "danger"});
+					document.getElementById("AlertMessage").innerHTML = "Ha ocurrido un error, intente de nuevo"
+				}
+			})
 	}
   render() {
 		
@@ -213,6 +246,7 @@ class Mantenimiento extends React.Component {
 									<th scope="col">Apellidos</th>
 									<th scope="col">Puesto</th>
 									<th colSpan="2" scope="col">Huella</th>
+									<th scope="col">Accion</th>
 								</tr>
 							</thead>
 							<tbody>					
@@ -232,9 +266,12 @@ class Mantenimiento extends React.Component {
 													}
 												</td>
 												<td>
-												<div id={this.state.empleados[index].ID+"spinner"} style={{display: "none"}} className="spinner-border text-primary" role="status">
-													<span className="sr-only">Loading...</span>
-												</div>
+													<div id={this.state.empleados[index].ID+"spinner"} style={{display: "none"}} className="spinner-border text-primary" role="status">
+														<span className="sr-only">Loading...</span>
+													</div>
+												</td>
+												<td>
+													<button className="btn btn-sm btn-outline-danger" onClick={()=> this.Eliminar(this.state.empleados[index].ID)}>Eliminar</button>
 												</td>
 											</tr>
 										)
