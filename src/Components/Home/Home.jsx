@@ -17,13 +17,18 @@ class Home extends React.Component {
   }
 
   Clear(){
-    alert("llego");
-    setTimeout(function(){
+    var TMR= setTimeout(function(){
         document.getElementById('AlertContainer').style.display="none";
         document.getElementById('RowEmpleado').style.display = 'none';
+        clearTimeout(TMR);
       }, 5000);
+
+    
   }
   Procesar(){
+    document.getElementById('spinner').style.display = 'block';
+    document.getElementById('AlertContainer').style.display="none";
+    document.getElementById('RowEmpleado').style.display = 'none';
     Axios({
       method: 'GET',
       url : "http://localhost:60141/CICAM/Marcaje",
@@ -43,8 +48,10 @@ class Home extends React.Component {
           alertType: "danger"
         })
         document.getElementById("RowEmpleado").style.display = "none";
+        document.getElementById('spinner').style.display = 'none';
 
       }else{
+        document.getElementById('spinner').style.display = 'none';
         this.setState({alertType: "success"})
         Axios.get("http://localhost:60141/CICAM/Empleados/Find?ID="+parseInt(response.data.ID))
         .then(response =>{
@@ -58,6 +65,7 @@ class Home extends React.Component {
       document.getElementById("AlertContainer").style.display= "block";
 
       this.Clear();
+
     })
   }
 
@@ -86,6 +94,9 @@ class Home extends React.Component {
               <div className="col-6">
                 <button id="btn_submit" className="btn btn-primary btn-block" onClick={this.Procesar}>Marcar</button>
               </div>
+              <div id="spinner" style={{display: "none"}} className="spinner-border text-primary" role="status">
+                  <span className="sr-only">Loading...</span>
+                </div>
             </div>
           </div>
         </div>
