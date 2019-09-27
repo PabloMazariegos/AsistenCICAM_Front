@@ -11,14 +11,16 @@ class Mantenimiento extends React.Component {
 
 		this.state = {
 			empleados : [],
-			export : []
+			export : [],
+			FechaInicial : '',
+			FechaFinal : ''
 		}
-
 		this.FindCodigo = this.FindCodigo.bind(this);
 		this.Ingresar = this.Ingresar.bind(this);
 		this.FormIngresar = this.FormIngresar.bind(this);
 		this.FindApellido = this.FindApellido.bind(this);
 		this.FindPuesto = this.FindPuesto.bind(this);
+		this.FechaReport = this.FechaReport.bind(this);
 	}
 
 	componentDidMount(){
@@ -164,11 +166,25 @@ class Mantenimiento extends React.Component {
 				if(response.data.StatusCode === 200){
 					this.setState({alertType : "success"});
 					document.getElementById("AlertMessage").innerHTML = "Empleado Eliminado Exitosamente! "
+
+					Axios.get("http://localhost:60141/CICAM/Empleados/")
+					.then(response =>{
+						this.setState({
+							empleados : response.data
+						})
+					})
 				}else{
 					this.setState({alertType : "danger"});
 					document.getElementById("AlertMessage").innerHTML = "Ha ocurrido un error, intente de nuevo"
 				}
 			})
+	}
+
+	FechaReport(){
+		this.setState({
+			FechaInicial : document.getElementById('FechaInicial').value,
+			FechaFinal : document.getElementById('FechaFinal').value		
+		})
 	}
   render() {
 		
@@ -212,9 +228,17 @@ class Mantenimiento extends React.Component {
 						</div>
 					</div>
 
+					<div className="input-group mb-3">
+						<input type="date" className="form-control" placeholder="FechaInicial" id="FechaInicial" onChange={this.FechaReport}/>
+						<input type="date" className="form-control" placeholder="FechaFinal" id="FechaFinal" onChange={this.FechaReport}/>
+						<div className="input-group-append">
+							<Excel FechaInit={this.state.FechaInicial}  FechaFinal={this.state.FechaFinal}/>  
+						</div>
+					</div>
+
 						<div className="col-md-5 col-7 mt-3">          
-							<button className="btn btn-outline-secondary btn-block"  id="btn_Nuevo" name="btn_Nuevo" onClick={this.FormIngresar}>Nuevo</button>            
-							<Excel />           
+							<button className="btn btn-outline-primary btn-block"  id="btn_Nuevo" name="btn_Nuevo" onClick={this.FormIngresar}>Nuevo</button>     
+							         
 						</div>
 					</div>
 				</div>
@@ -252,6 +276,7 @@ class Mantenimiento extends React.Component {
 							<tbody>					
 								{
 									Object.keys(this.state.empleados).map(index =>{
+										
 										return (
 											<tr key={this.state.empleados[index].ID}>
 												<td>{this.state.empleados[index].ID}</td>
@@ -260,9 +285,7 @@ class Mantenimiento extends React.Component {
 												<td>{this.state.empleados[index].PUESTO}</td>
 												<td>
 													{
-														this.state.empleados[index].HUELLA 
-															? <button className="btn btn-success" onClick={()=> this.GrabaHuella(this.state.empleados[index].ID)}>Actualizar</button>
-															: <button className="btn btn-danger" onClick={()=> this.GrabaHuella(this.state.empleados[index].ID)}>Grabar</button>
+														<button className="btn btn-outline-primary	" onClick={()=> this.GrabaHuella(this.state.empleados[index].ID)}>Grabar</button>															
 													}
 												</td>
 												<td>

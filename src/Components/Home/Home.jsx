@@ -12,10 +12,18 @@ class Home extends React.Component {
     }
 
     this.Procesar =  this.Procesar.bind(this);
+    this.Clear =  this.Clear.bind(this);
     
   }
 
-  Procesar = () => {
+  Clear(){
+    alert("llego");
+    setTimeout(function(){
+        document.getElementById('AlertContainer').style.display="none";
+        document.getElementById('RowEmpleado').style.display = 'none';
+      }, 5000);
+  }
+  Procesar(){
     Axios({
       method: 'GET',
       url : "http://localhost:60141/CICAM/Marcaje",
@@ -48,8 +56,12 @@ class Home extends React.Component {
       }
       document.getElementById("AlertMessage").innerHTML = response.data.status;
       document.getElementById("AlertContainer").style.display= "block";
+
+      this.Clear();
     })
   }
+
+    
   
   render() {
     return (
