@@ -8,7 +8,8 @@ class Home extends React.Component {
 
     this.state = {
       Empleado : [],
-      alertType : ""
+      alertType : "",
+      timeOut : ""
     }
 
     this.Procesar =  this.Procesar.bind(this);
@@ -16,14 +17,15 @@ class Home extends React.Component {
     
   }
 
+  componentWillUnmount(){
+    clearTimeout(this.state.timeOut)
+  }
+
   Clear(){
-    var TMR= setTimeout(function(){
+    this.state.timeOut= setTimeout(function(){
         document.getElementById('AlertContainer').style.display="none";
         document.getElementById('RowEmpleado').style.display = 'none';
-        clearTimeout(TMR);
-      }, 5000);
-
-    
+      }, 1300);
   }
   Procesar(){
     document.getElementById('spinner').style.display = 'block';
